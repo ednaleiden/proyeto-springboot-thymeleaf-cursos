@@ -30,8 +30,8 @@
         </div>
     </div>
 </div>
-
-    <table class="table table-hover table-responsive-xl">
+<div class="container mb-5">
+    <table class="table table-dark table-hover table-responsive-xl">
         <thead class="thead-light">
         <tr>
             <th>id</th>
@@ -49,6 +49,10 @@
             <td>[[${curso.description}]]</td>
             <td>[[${curso.nivel}]]</td>
             <td>
+                <a th:if="${curso.isPublicado == true}" class="fa-regular fa-square-check"></a>
+                <a th:if="${curso.isPublicado == false}" class="fa-regular fa-square icon-dark"></a>
+            </td>
+            <td>
                 <a th:href="@{'/cursos/editar/' + ${curso.id}}" title="Editar curso"
                    class="fa-regular fa-pen-to-square icon-dark btn btn-primary">
                 </a>
@@ -56,7 +60,6 @@
                    class="fa-regular fa-trash-can icon-dark btn btn-danger">
                 </a>
             </td>
-
         </tr>
         </tbody>
 
