@@ -3,6 +3,7 @@ package com.projectSpring.controller;
 
 
 
+import com.projectSpring.Reports.cursoExporterExcel;
 import com.projectSpring.Reports.cursoExporterPDF;
 import com.projectSpring.entity.Curso;
 import com.projectSpring.repository.CursoRepository;
@@ -105,6 +106,23 @@ public class CursoController {
         List<Curso>cursos = cursoRepository.findAll();
 
         cursoExporterPDF exporterPDF = new cursoExporterPDF(cursos);
+        exporterPDF.export(response);
+    }
+
+    @GetMapping("/export/excel")
+    public  void  generarReporteExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");//decir que es excel
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentDateTime = dateFormat.format(new Date());
+
+        String headerKey = "content-Disposition";
+        String headerValue = "attachment; filename=cursos"+ currentDateTime +".xlsx";
+
+        response.setHeader(headerKey, headerValue);
+
+        List<Curso>cursos = cursoRepository.findAll();
+
+        cursoExporterExcel exporterPDF = new cursoExporterExcel(cursos);
         exporterPDF.export(response);
     }
     
