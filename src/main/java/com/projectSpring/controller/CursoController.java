@@ -9,11 +9,16 @@ import com.projectSpring.entity.Curso;
 import com.projectSpring.repository.CursoRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.awt.*;
@@ -37,10 +42,28 @@ public class CursoController {
     }
 
     @GetMapping("/cursos")
-    public  String listarCursos(Model model){
-        List<Curso> cursos = cursoRepository.findAll();
-        cursos = cursoRepository.findAll();
-        model.addAttribute("cursos", cursos);
+    public  String listarCursos(Model model, @Param("keyword") String keyword, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "3") int size){
+        try{
+            List<Curso> cursos = new ArrayList<>();
+            Pageable pagin = PageRequest.of(page-1,size);
+
+            Page<Curso> pageCurso = null;
+
+            if (keyword ==null){
+                pageCurso = cursoRepository.findAll(pagin);
+            }else{
+                pageCurso = cursoRepository.fingbyTituloContainingIgnoreCase(keyword,pagin);
+                model.addAttribute("keyword",keyword);
+            }
+            cursos = pageCurso.getContent();
+            model.addAttribute("cursos",cursos);
+            model.addAttribute("currentPage", pageCurso.getNumber() + 1);
+            model.addAttribute("totalItem", pageCurso.getTotalElements());
+            model.addAttribute("totalPages", pageCurso.getTotalPages());
+            model.addAttribute("pageSize", size);
+        }catch(Exception e){
+            model.addAttribute("message", e.getMessage());
+        }
         return "cursos";
     }
 
