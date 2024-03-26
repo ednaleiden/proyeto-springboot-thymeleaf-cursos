@@ -42,30 +42,36 @@ public class CursoController {
     }
 
     @GetMapping("/cursos")
-    public  String listarCursos(Model model, @Param("keyword") String keyword, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "3") int size){
+    public String listarCursos(Model model, @Param("keyword") String keyword, @RequestParam(defaultValue = "1") int page,@RequestParam(defaultValue = "3") int size){
         try{
             List<Curso> cursos = new ArrayList<>();
-            Pageable pagin = PageRequest.of(page-1,size);
+            Pageable paging = PageRequest.of(page-1,size);
 
-            Page<Curso> pageCurso = null;
+            Page<Curso> pageCursos = null;
 
-            if (keyword ==null){
-                pageCurso = cursoRepository.findAll(pagin);
-            }else{
-                pageCurso = cursoRepository.findByTituloContainingIgnoreCase(keyword,pagin);
+            if(keyword == null){
+                pageCursos = cursoRepository.findAll(paging);
+            }
+            else{
+                pageCursos = cursoRepository.findByTituloContainingIgnoreCase(keyword,paging);
                 model.addAttribute("keyword",keyword);
             }
-            cursos = pageCurso.getContent();
+
+            cursos = pageCursos.getContent();
+
             model.addAttribute("cursos",cursos);
-            model.addAttribute("currentPage", pageCurso.getNumber() + 1);
-            model.addAttribute("totalItem", pageCurso.getTotalElements());
-            model.addAttribute("totalPages", pageCurso.getTotalPages());
-            model.addAttribute("pageSize", size);
-        }catch(Exception e){
-            model.addAttribute("message", e.getMessage());
+
+            model.addAttribute("currentPage",pageCursos.getNumber() + 1);
+            model.addAttribute("totalItems",pageCursos.getTotalElements());
+            model.addAttribute("totalPages",pageCursos.getTotalPages());
+            model.addAttribute("pageSize",size);
+        }catch (Exception exception){
+            model.addAttribute("message",exception.getMessage());
         }
+
         return "cursos";
     }
+
 
     @GetMapping("/cursos/nuevo")
     public String agregarCursos(Model model){
