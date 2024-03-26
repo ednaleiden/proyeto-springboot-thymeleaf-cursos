@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CursoRepository extends JpaRepository<Curso,Integer> {
 
-    Page<Curso> fingbyTituloContainingIgnoreCase(String keyword, Pageable pageable);
+    Page<Curso> findByTituloContainingIgnoreCase(String keyword, Pageable pageable);
 }

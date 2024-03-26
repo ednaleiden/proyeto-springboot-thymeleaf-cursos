@@ -52,7 +52,7 @@ public class CursoController {
             if (keyword ==null){
                 pageCurso = cursoRepository.findAll(pagin);
             }else{
-                pageCurso = cursoRepository.fingbyTituloContainingIgnoreCase(keyword,pagin);
+                pageCurso = cursoRepository.findByTituloContainingIgnoreCase(keyword,pagin);
                 model.addAttribute("keyword",keyword);
             }
             cursos = pageCurso.getContent();
